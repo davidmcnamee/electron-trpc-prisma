@@ -82,20 +82,20 @@ publish-release:
 # Bump version (patch)
 version-patch push="false":
     npm version patch
-    if {{push}} != "false"; then git push; fi
-    if {{push}} != "false"; then git push --tags; fi
+    if '{{push}}' != "false"; then git push; fi
+    if '{{push}}' != "false"; then git push --tags; fi
 
 # Bump version (minor)
 version-minor push="false":
     npm version minor
-    if {{push}} != "false"; then git push; fi
-    if {{push}} != "false"; then git push --tags; fi
+    if '{{push}}' != "false"; then git push; fi
+    if '{{push}}' != "false"; then git push --tags; fi
 
 # Bump version (major)  
 version-major push="false":
     npm version major
-    if {{push}} != "false"; then git push; fi
-    if {{push}} != "false"; then git push --tags; fi
+    if '{{push}}' != "false"; then git push; fi
+    if '{{push}}' != "false"; then git push --tags; fi
 
 # Full release: compile, version bump, package, and publish
 release:
