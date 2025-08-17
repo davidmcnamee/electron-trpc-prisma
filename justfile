@@ -80,21 +80,27 @@ publish-release:
     \`\`\`"
 
 # Bump version (patch)
-version-patch:
+version-patch push=false:
     npm version patch
+    if {{push}} git push
+    if {{push}} git push --tags
 
 # Bump version (minor)
-version-minor:
+version-minor push=false:
     npm version minor
+    if {{push}} git push
+    if {{push}} git push --tags
 
 # Bump version (major)  
-version-major:
+version-major push=false:
     npm version major
+    if {{push}} git push
+    if {{push}} git push --tags
 
 # Full release: compile, version bump, package, and publish
 release:
     just compile
-    just version-patch
+    just version-patch --push
     just package
     just publish-release
 
