@@ -1,15 +1,10 @@
 
-# Install dependencies and set up database
-bootstrap:
-    npm install && just db-push
-
 # Development server
 dev:
     npx cross-env NODE_ENV=development just watch-desktop
 
 # Build all components
-build:
-    just build-main & just build-preload & just build-renderer
+build: build-main build-preload build-renderer
 
 # Compile production build
 compile:
