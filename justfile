@@ -80,25 +80,29 @@ publish-release:
     \`\`\`"
 
 # Bump version (patch)
-version-patch push=false:
+version-patch push="":
     npm version patch
     if {{push}} git push
     if {{push}} git push --tags
 
 # Bump version (minor)
-version-minor push=false:
+version-minor push="":
     npm version minor
     if {{push}} git push
     if {{push}} git push --tags
 
 # Bump version (major)  
-version-major push=false:
+version-major push="":
     npm version major
     if {{push}} git push
     if {{push}} git push --tags
 
 # Full release: compile, version bump, package, and publish
 release:
+    if [ -n "$(git status --porcelain)" ]; then \
+        echo "Error: Git working directory is not clean. Please commit or stash changes first."; \
+        exit 1; \
+    fi
     just compile
     just version-patch --push
     just package
