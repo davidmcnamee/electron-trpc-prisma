@@ -99,13 +99,38 @@ release:
     just version-patch true
     just package
     just publish-release
+    just update-cask
+
+# Get version from package.json
+get-version:
+    @node -p "require('./package.json').version"
 
 # Get SHA256 for latest release tarball, this is used in homebrew formula/cask
 sha256:
+    @shasum -a 256 "releases/trpc-prisma-electron-$(just get-version)-mac-arm64.tar.gz" | awk '{print $1}'
+
+# Export Homebrew Cask contents to stdout
+export-cask:
+    @echo "{\"version\": \"$(just get-version)\", \"sha256\": \"$(just sha256)\"}" | npx mustache - templates/electron-trpc-prisma.rb.mustache
+
+# Update Homebrew Cask in tap repo
+update-cask:
     #!/usr/bin/env bash
-    VERSION=$(node -p "require('./package.json').version")
-    echo $VERSION >&2
-    shasum -a 256 "releases/trpc-prisma-electron-${VERSION}-mac-arm64.tar.gz" | awk '{print $1}'
+    pushd ../homebrew-tap
+    if [ -n "$(git status --porcelain)" ]; then
+        echo "Error: Git working directory is not clean. Please commit or stash changes first."
+        exit 1
+    fi
+    popd
+    
+    # Generate the cask file
+    just export-cask > ../homebrew-tap/Casks/electron-trpc-prisma.rb
+    
+    # Commit and push in the homebrew-tap repo
+    cd ../homebrew-tap
+    git add Casks/electron-trpc-prisma.rb
+    git commit -m "Update electron-trpc-prisma to v$(just get-version)"
+    git push
 
 postinstall:
     just vendors-update && just db-generate
