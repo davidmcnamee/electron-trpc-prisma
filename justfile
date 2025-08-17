@@ -100,5 +100,12 @@ release:
     just package
     just publish-release
 
+# Get SHA256 for latest release tarball, this is used in homebrew formula/cask
+sha256:
+    #!/usr/bin/env bash
+    VERSION=$(node -p "require('./package.json').version")
+    echo $VERSION >&2
+    shasum -a 256 "releases/trpc-prisma-electron-${VERSION}-mac-arm64.tar.gz" | awk '{print $1}'
+
 postinstall:
     just vendors-update && just db-generate
