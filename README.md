@@ -1,29 +1,51 @@
 Based on: https://github.com/cawa-93/vite-electron-builder
 The tRPC over IPC code is based on [the electron-trpc package](https://github.com/jsonnull/electron-trpc), adapted to support tRPC v10 by using [tRPC source](https://github.com/trpc/trpc/tree/next).
 
-## Running locally
+## Development
 
-- Run `npm run bootstrap`.
-  This installs the dependencies and sets up the database.
+Install [just](https://just.systems/) if you haven't already.
 
-- Run `npm run dev`
-  This starts a development watch process using `vite`.
-  It hot reloads on changes to `renderer/`
-  It reloads the web page on changes to `preload/`
-  It fully reloads the Electron app on changes to `main/`
+```bash
+# Install dependencies and setup database
+just bootstrap
 
-## Packaging the app
+# Start development server
+just dev
+```
 
-`electron-builder` is used to compile this codebase into an executable.
+This starts a development watch process using `vite`:
+- Hot reloads on changes to `renderer/`
+- Reloads the web page on changes to `preload/`
+- Fully reloads the Electron app on changes to `main/`
 
-- Run `npm run compile`
+## Building
 
-This executes the `scripts/compile.ts` file.
-It uses the `electron-builder` programmatic API.
+```bash
+# Build for production
+just compile
+```
 
-If you want to compile an installable executable, change `dir` to `false` in the call to `build()`.
+This uses the `electron-builder` programmatic API via `scripts/compile.ts`.
 
-[`electron-builder` API docs](https://www.electron.build/api/electron-builder)
+## Release
+
+```bash
+# Create a new release (builds, bumps version, packages, and publishes to GitHub)
+just release
+```
+
+This will:
+- Build the app (`just compile`)
+- Bump the version (`just version-patch`)  
+- Package it into a tarball (`just package`)
+- Create a GitHub release (`just publish-release`)
+- Output the SHA256 hash for Homebrew
+
+## Installation via Homebrew
+
+```bash
+brew install --cask davidmcnamee/tap/electron-trpc-prisma
+```
 
 ## Notes
 
